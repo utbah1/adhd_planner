@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "152586068962",
+    "project_id": "adhd-planner-11",
+    "storage_bucket": "adhd-planner-11.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152586068962:android:b550cd703124bab0e70fbb",
+        "android_client_info": {
+          "package_name": "com.hn.adhdplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152586068962-kfh8mm8sai6m9vlbouca288djgmv62kn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hn.adhdplanner",
+            "certificate_hash": "3eb425792673b7f9bbe4683c236ded752a043518"
+          }
+        },
+        {
+          "client_id": "152586068962-1tjg553dj2idh84fqeonbbd82u494fk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA20mImyABF0PQa_7voFjIDeB5YKe6rJmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152586068962-1tjg553dj2idh84fqeonbbd82u494fk0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

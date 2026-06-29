@@ -14,6 +14,7 @@ abstract class Routes {
   static const VOICE_INPUT = _Paths.VOICE_INPUT;
   static const IMAGE_INPUT = _Paths.IMAGE_INPUT;
   static const FOCUS_MODE = _Paths.FOCUS_MODE;
+  static const SPLASH = _Paths.SPLASH;
 }
 
 abstract class _Paths {
@@ -29,4 +30,5 @@ abstract class _Paths {
   static const VOICE_INPUT = '/voice-input';
   static const IMAGE_INPUT = '/image-input';
   static const FOCUS_MODE = '/focus-mode';
+  static const SPLASH = "/splash";
 }

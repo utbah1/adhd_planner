@@ -1,122 +1,78 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../data/models/auth/login_request.dart';
+import '../../../../data/services/auth_service.dart';
 import '../../../../routes/app_pages.dart';
-
 import '../../../../shared/widgets2/custom_snackbar.dart';
 
 class LoginController extends GetxController {
+  final emailController = TextEditingController();
 
-  final emailController =
-      TextEditingController();
+  final passwordController = TextEditingController();
 
-  final passwordController =
-      TextEditingController();
+  final loading = false.obs;
 
-  final isLoading = false.obs;
+  final hidePassword = true.obs;
 
-  final FirebaseAuth auth =
-      FirebaseAuth.instance;
+  void togglePassword() {
+    hidePassword.toggle();
+  }
 
   Future<void> login() async {
+    FocusManager.instance.primaryFocus?.unfocus();
 
-    final email =
-        emailController.text.trim();
-
-    final password =
-        passwordController.text.trim();
-
-    /// VALIDASI
-    if (email.isEmpty ||
-        password.isEmpty) {
-
+    if (emailController.text.trim().isEmpty) {
       CustomSnackbar.error(
-        title: "Oops",
-        message:
-            "Email dan password wajib diisi",
+        title: "Login",
+        message: "Email wajib diisi",
       );
+      return;
+    }
 
+    if (passwordController.text.isEmpty) {
+      CustomSnackbar.error(
+        title: "Login",
+        message: "Password wajib diisi",
+      );
       return;
     }
 
     try {
+      loading.value = true;
 
-      isLoading.value = true;
-
-      /// FIREBASE LOGIN
-      await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+      final response = await AuthService.login(
+        LoginRequest(
+          email: emailController.text.trim(),
+          password: passwordController.text,
+        ),
       );
 
+      debugPrint(response.accessToken);
+
       CustomSnackbar.success(
-        title: "Berhasil",
-        message: "Login berhasil",
+        title: "Login Berhasil",
+        message: "Selamat datang kembali!",
       );
 
       Get.offAllNamed(
         Routes.DASHBOARD,
       );
 
-    }
-    on FirebaseAuthException catch (e) {
-
-      String message =
-          "Terjadi kesalahan";
-
-      if (e.code == 'user-not-found') {
-        message =
-            "Email tidak ditemukan";
-      }
-
-      else if (e.code ==
-          'wrong-password') {
-
-        message =
-            "Password salah";
-      }
-
-      else if (e.code ==
-          'invalid-email') {
-
-        message =
-            "Format email tidak valid";
-      }
-
-      else if (e.code ==
-          'invalid-credential') {
-
-        message =
-            "Email atau password salah";
-      }
-
+    } catch (e) {
       CustomSnackbar.error(
         title: "Login Gagal",
-        message: message,
-      );
-    }
-
-    catch (e) {
-
-      CustomSnackbar.error(
-        title: "Error",
         message: e.toString(),
       );
-    }
-
-    finally {
-
-      isLoading.value = false;
+    } finally {
+      loading.value = false;
     }
   }
 
   @override
   void onClose() {
-
     emailController.dispose();
     passwordController.dispose();
-
     super.onClose();
   }
 }

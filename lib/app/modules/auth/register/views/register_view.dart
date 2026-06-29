@@ -88,6 +88,26 @@ class RegisterView extends GetView<RegisterController> {
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
+                          "Nama Lengkap",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        hint: "Alex Abdurrahman",
+                        icon: Iconsax.user,
+                        controller: controller.fullnameController,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
                           "Alamat Email",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -117,11 +137,21 @@ class RegisterView extends GetView<RegisterController> {
 
                       const SizedBox(height: 10),
 
-                      CustomTextField(
-                        hint: "••••••••",
-                        icon: Iconsax.lock,
-                        obscure: true,
-                        controller: controller.passwordController,
+                      Obx(
+                        () => CustomTextField(
+                          hint: "••••••••",
+                          icon: Iconsax.lock,
+                          controller: controller.passwordController,
+                          obscure: controller.hidePassword.value,
+                          suffixIcon: IconButton(
+                            onPressed: controller.togglePassword,
+                            icon: Icon(
+                              controller.hidePassword.value
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 20),
@@ -137,24 +167,34 @@ class RegisterView extends GetView<RegisterController> {
                       ),
 
                       const SizedBox(height: 10),
-
-                      CustomTextField(
-                        hint: "••••••••",
-                        icon: Iconsax.lock,
-                        obscure: true,
-                        controller:
-                            controller.confirmPasswordController,
+                      
+                      Obx(
+                        () => CustomTextField(
+                          hint: "••••••••",
+                          icon: Iconsax.lock,
+                          controller: controller.confirmPasswordController,
+                          obscure: controller.hidePassword.value,
+                          suffixIcon: IconButton(
+                            onPressed: controller.togglePassword,
+                            icon: Icon(
+                              controller.hidePassword.value
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 30),
 
-                      Obx(() => CustomButton(
-                            text: controller.isLoading.value
-                                ? "Loading..."
-                                : "Daftar",
-
-                            onTap: controller.register,
-                          )),
+                      Obx(
+                        () => CustomButton(
+                          text: controller.loading.value
+                              ? "Loading..."
+                              : "Daftar",
+                          onTap: controller.register,
+                        ),
+                      ),
                     ],
                   ),
                 ),

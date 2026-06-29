@@ -43,3 +43,24 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# Firebase
+firebase-debug.log
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# VS Code
+.vscode/settings.json
+
+# Android
+local.properties
+key.properties
+*.jks
+*.keystore
+
+# iOS
+Pods/
+Podfile.lock

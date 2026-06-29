@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../shared/widgets/custom_button.dart';
+import '../../../../data/services/session_service.dart';
 
 class OnboardingView extends StatelessWidget {
   const OnboardingView({super.key});
@@ -74,16 +75,27 @@ class OnboardingView extends StatelessWidget {
 
                 CustomButton(
                   text: "Get Started →",
-                  onTap: () {
-                    Get.toNamed(Routes.REGISTER);
+                  onTap: () async {
+
+                    await SessionService.finishOnboarding();
+
+                    Get.offAllNamed(
+                      Routes.REGISTER,
+                    );
+
                   },
                 ),
 
                 const SizedBox(height: 25),
 
                 GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.LOGIN);
+                  onTap: () async {
+
+                    await SessionService.finishOnboarding();
+                    
+                    Get.offAllNamed(
+                      Routes.LOGIN,
+                    );
                   },
                   child: const Text(
                     "Already have an account? Sign In",

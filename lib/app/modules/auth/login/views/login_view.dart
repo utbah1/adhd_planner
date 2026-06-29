@@ -139,22 +139,42 @@ class _LoginViewState
 
                       const SizedBox(height: 10),
 
-                      CustomTextField(
-                        controller: controller.passwordController,
-                        hint: "••••••••",
-                        icon: Iconsax.lock,
-                        obscure: true,
+                      Obx(
+                        () => CustomTextField(
+                          controller:
+                              controller.passwordController,
+
+                          hint: "••••••••",
+
+                          icon: Iconsax.lock,
+
+                          obscure:
+                              controller.hidePassword.value,
+
+                          suffixIcon: IconButton(
+                            onPressed:
+                                controller.togglePassword,
+
+                            icon: Icon(
+                              controller.hidePassword.value
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 30),
 
-                      Obx(() => CustomButton(
-                            text: controller.isLoading.value
-                                ? "Loading..."
-                                : "Masuk",
+                      Obx(
+                        () => CustomButton(
+                          text: "Masuk",
 
-                            onTap: controller.login,
-                          )),
+                          loading: controller.loading.value,
+
+                          onTap: controller.login,
+                        ),
+                      ),
                     ],
                   ),
                 ),

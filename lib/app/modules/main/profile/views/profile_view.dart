@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
 
+import '../../../../data/services/auth_service.dart';
+import '../../../../data/services/session_service.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../shared/widgets2/custom_navbar.dart';
 import '../../../../shared/widgets2/custom_topbar.dart';
@@ -206,13 +208,16 @@ class _ProfileViewState
                                   ),
                                 ),
 
-                                onPressed: () {
+                                onPressed: () async {
 
                                   Get.back();
+
+                                  await AuthService.logout();
 
                                   Get.offAllNamed(
                                     Routes.LOGIN,
                                   );
+
                                 },
 
                                 child: const Text(

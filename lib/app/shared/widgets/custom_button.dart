@@ -1,51 +1,91 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_text_styles.dart';
-
 class CustomButton extends StatelessWidget {
-
   final String text;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool loading;
+  final bool enabled;
+  final double height;
+  final double borderRadius;
+  final EdgeInsetsGeometry? margin;
 
   const CustomButton({
     super.key,
     required this.text,
     required this.onTap,
+    this.loading = false,
+    this.enabled =true,
+    this.height = 55,
+    this.borderRadius = 16,
+    this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bool canPress = enabled && !loading;
 
-    return GestureDetector(
-      onTap: onTap,
-
-      child: Container(
-        height: 60,
-
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-
-          gradient: const LinearGradient(
-            colors: [
-              AppColors.primary,
-              AppColors.secondary,
-            ],
-          ),
-
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(.3),
-              blurRadius: 15,
-              offset: const Offset(0, 10),
-            )
-          ],
-        ),
-
-        child: Center(
-          child: Text(
-            text,
-            style: AppTextStyles.button,
+    return Container(
+      margin: margin,
+      width: double.infinity,
+      height: height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius),
+        gradient: canPress
+            ? const LinearGradient(
+                colors: [
+                  Color(0xFF6C63FF),
+                  Color(0xFF8E7BFF),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : LinearGradient(
+                colors: [
+                  Colors.grey.shade400,
+                  Colors.grey.shade500,
+                ],
+              ),
+        boxShadow: canPress
+            ? [
+                BoxShadow(
+                  color: const Color(0xFF6C63FF).withOpacity(0.30),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ]
+            : [],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(borderRadius),
+          onTap: canPress ? onTap : null,
+          child: Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              child: loading
+                  ? const SizedBox(
+                      key: ValueKey("loading"),
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      text,
+                      key: const ValueKey("text"),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+            ),
           ),
         ),
       ),

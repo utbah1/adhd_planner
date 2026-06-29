@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 import '../../core/constants/app_colors.dart';
 
-class CustomTextField extends StatefulWidget {
-
+class CustomTextField extends StatelessWidget {
   final String hint;
+
   final IconData icon;
-  final bool obscure;
+
   final TextEditingController controller;
+
+  final bool obscure;
+
+  final Widget? suffixIcon;
+
+  final TextInputType keyboardType;
+
+  final int maxLines;
+
+  final bool enabled;
 
   const CustomTextField({
     super.key,
@@ -16,33 +25,18 @@ class CustomTextField extends StatefulWidget {
     required this.icon,
     required this.controller,
     this.obscure = false,
+    this.suffixIcon,
+    this.keyboardType = TextInputType.text,
+    this.maxLines = 1,
+    this.enabled = true,
   });
 
   @override
-  State<CustomTextField> createState() =>
-      _CustomTextFieldState();
-}
-
-class _CustomTextFieldState
-    extends State<CustomTextField> {
-
-  late bool isObscure;
-
-  @override
-  void initState() {
-    super.initState();
-
-    isObscure = widget.obscure;
-  }
-
-  @override
   Widget build(BuildContext context) {
-
     return Container(
-      height: 68,
+      height: maxLines == 1 ? 68 : null,
 
       decoration: BoxDecoration(
-
         color: Colors.white,
 
         borderRadius:
@@ -56,7 +50,6 @@ class _CustomTextFieldState
           BoxShadow(
             color:
                 Colors.black.withOpacity(.03),
-
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -64,10 +57,16 @@ class _CustomTextFieldState
       ),
 
       child: TextField(
+        controller: controller,
 
-        controller: widget.controller,
+        obscureText: obscure,
 
-        obscureText: isObscure,
+        keyboardType: keyboardType,
+
+        maxLines:
+            obscure ? 1 : maxLines,
+
+        enabled: enabled,
 
         style: const TextStyle(
           fontSize: 17,
@@ -76,7 +75,6 @@ class _CustomTextFieldState
         ),
 
         decoration: InputDecoration(
-
           border: InputBorder.none,
 
           contentPadding:
@@ -84,15 +82,13 @@ class _CustomTextFieldState
             vertical: 20,
           ),
 
-          hintText: widget.hint,
+          hintText: hint,
 
           hintStyle: const TextStyle(
             color: Color(0xFF9D97A8),
             fontSize: 17,
-            fontWeight: FontWeight.w400,
           ),
 
-          /// PREFIX ICON
           prefixIcon: Padding(
             padding: const EdgeInsets.only(
               left: 18,
@@ -100,9 +96,8 @@ class _CustomTextFieldState
             ),
 
             child: Icon(
-              widget.icon,
+              icon,
               color: AppColors.textGrey,
-              size: 24,
             ),
           ),
 
@@ -111,37 +106,7 @@ class _CustomTextFieldState
             minWidth: 60,
           ),
 
-          /// SUFFIX ICON PASSWORD
-          suffixIcon: widget.obscure
-              ? GestureDetector(
-
-                  onTap: () {
-
-                    setState(() {
-                      isObscure =
-                          !isObscure;
-                    });
-                  },
-
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(
-                      right: 18,
-                    ),
-
-                    child: Icon(
-                      isObscure
-                          ? Iconsax.eye
-                          : Iconsax.eye_slash,
-
-                      color:
-                          AppColors.textGrey,
-
-                      size: 24,
-                    ),
-                  ),
-                )
-              : null,
+          suffixIcon: suffixIcon,
 
           suffixIconConstraints:
               const BoxConstraints(
