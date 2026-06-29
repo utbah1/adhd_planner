@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -16,65 +18,83 @@ class CustomNavbar extends StatelessWidget {
     required this.onTap,
   });
 
-  @override
-  Widget build(BuildContext context) {
+@override
+Widget build(BuildContext context) {
 
-    return Container(
-      margin: const EdgeInsets.all(20),
+  return Container(
 
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 12,
+    color: Colors.transparent,
+
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        0,
+        20,
+        20,
       ),
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 12,
+        ),
 
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        decoration: BoxDecoration(
+          color: Colors.white,
+
+          borderRadius:
+              BorderRadius.circular(32),
+
+          boxShadow: [
+            BoxShadow(
+              color:
+                  Colors.black.withOpacity(.05),
+
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+
+        child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceBetween,
+
+          children: [
+
+            navItem(
+              icon: Iconsax.element_4,
+              index: 0,
+            ),
+
+            navItem(
+              icon: Iconsax.calendar,
+              index: 1,
+            ),
+
+            navItem(
+              icon: Iconsax.chart_2,
+              index: 2,
+            ),
+
+            navItem(
+              icon: Iconsax.profile_circle,
+              index: 3,
+            ),
+          ],
+        ),
       ),
-
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-        children: [
-
-          navItem(
-            icon: Iconsax.element_4,
-            index: 0,
-          ),
-
-          navItem(
-            icon: Iconsax.calendar,
-            index: 1,
-          ),
-
-          navItem(
-            icon: Iconsax.chart_2,
-            index: 2,
-          ),
-
-          navItem(
-            icon: Iconsax.profile_circle,
-            index: 3,
-          ),
-        ],
-      ),
-    );
-  }
+    ),
+  );
+}
 
   Widget navItem({
     required IconData icon,
     required int index,
   }) {
 
-    bool isActive = currentIndex == index;
+    bool isActive =
+        currentIndex == index;
 
     return GestureDetector(
 
@@ -82,35 +102,40 @@ class CustomNavbar extends StatelessWidget {
 
         onTap(index);
 
-        /// HOME
         if(index == 0) {
-          Get.offAllNamed(Routes.HOME);
+          Get.offAllNamed(
+            Routes.DASHBOARD,
+          );
         }
 
-        /// CALENDAR
         if(index == 1) {
-          Get.offAllNamed(Routes.CALENDAR);
+          Get.offAllNamed(
+            Routes.CALENDAR,
+          );
         }
 
-        /// ANALYTICS
         if(index == 2) {
-          Get.offAllNamed(Routes.ANALYTICS);
+          Get.offAllNamed(
+            Routes.ANALYTICS,
+          );
         }
 
-        /// PROFILE
         if(index == 3) {
-          Get.offAllNamed(Routes.PROFILE);
+          Get.offAllNamed(
+            Routes.PROFILE,
+          );
         }
-
       },
 
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration:
+            const Duration(milliseconds: 250),
 
         width: 55,
         height: 55,
 
         decoration: BoxDecoration(
+
           color: isActive
               ? AppColors.primary
               : Colors.transparent,
@@ -120,10 +145,13 @@ class CustomNavbar extends StatelessWidget {
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(.25),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  )
+                    color: AppColors.primary
+                        .withOpacity(.22),
+
+                    blurRadius: 18,
+                    offset:
+                        const Offset(0, 8),
+                  ),
                 ]
               : [],
         ),
@@ -135,7 +163,7 @@ class CustomNavbar extends StatelessWidget {
               ? Colors.white
               : const Color(0xFF5B5563),
 
-          size: 26,
+          size: 25,
         ),
       ),
     );
