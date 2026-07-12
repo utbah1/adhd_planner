@@ -45,20 +45,20 @@ class AiInsightCard extends StatelessWidget {
           const SizedBox(height: 16),
 
           const Text(
-            "Waktu fokus mendalam\nsedang dimulai",
+            "Waktu Fokus Mendalam Sedang \nDimulai",
             style: TextStyle(
-              fontSize: 34,
+              fontSize: 28,
               height: 1.2,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 5),
 
           const Text(
-            'Beban kognitif Anda sedang rendah.\nIni waktu yang tepat untuk meninjau\narsitektur "Project Alpha".',
+            'Beban kognitif Anda sedang \nrendah. Ini waktu yang tepat \nuntuk meninjau arsitektur \n"Project Alpha".',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               height: 1.7,
               color: Color(0xFF5B5563),
             ),

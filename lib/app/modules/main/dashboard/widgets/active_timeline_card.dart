@@ -50,7 +50,7 @@ class ActiveTimelineCard extends StatelessWidget {
           const Text(
             "Deep Work: Architecture",
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 21,
               fontWeight: FontWeight.bold,
             ),
           ),

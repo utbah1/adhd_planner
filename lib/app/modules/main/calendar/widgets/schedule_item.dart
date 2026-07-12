@@ -8,6 +8,7 @@ class ScheduleItem extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
+  final VoidCallback? onTap;
 
   const ScheduleItem({
     super.key,
@@ -15,97 +16,108 @@ class ScheduleItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
 
-    return Row(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onTap,
 
-      children: [
+      child: Row(
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
 
-        SizedBox(
-          width: 70,
+        children: [
 
-          child: Text(
-            time,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF5B5563),
+          SizedBox(
+            width: 70,
+
+            child: Text(
+              time,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF5B5563),
+              ),
             ),
           ),
-        ),
 
-        Container(
-          width: 2,
-          height: 90,
-          color: const Color(0xFFE5E5EA),
-        ),
+          Container(
+            width: 2,
+            height: 90,
+            color: const Color(0xFFE5E5EA),
+          ),
 
-        const SizedBox(width: 20),
+          const SizedBox(width: 20),
 
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(24),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(24),
 
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(24),
-            ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    BorderRadius.circular(24),
+              ),
 
-            child: Row(
-              children: [
+              child: Row(
+                children: [
 
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
 
-                    children: [
+                      children: [
 
-                      Text(
-                        title,
+                        Text(
+                          title,
 
-                        overflow:
-                            TextOverflow.ellipsis,
+                          overflow:
+                              TextOverflow.ellipsis,
 
-                        maxLines: 1,
+                          maxLines: 1,
 
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight:
-                              FontWeight.bold,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      Text(
-                        subtitle,
-                        style: const TextStyle(
-                          color:
-                              Color(0xFF8A8395),
+                        Text(
+                          subtitle,
+
+                          overflow:
+                              TextOverflow.ellipsis,
+
+                          maxLines: 1,
+
+                          style: const TextStyle(
+                            color:
+                                Color(0xFF8A8395),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(width: 12),
+                  const SizedBox(width: 12),
 
-                Icon(
-                  icon,
-                  color: AppColors.primary,
-                ),
-              ],
+                  Icon(
+                    icon,
+                    color: AppColors.primary,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

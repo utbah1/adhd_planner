@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../data/models/task/task_model.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../shared/widgets2/custom_navbar.dart';
 import '../../../../shared/widgets2/custom_topbar.dart';
 
+import '../controllers/calendar_controller.dart';
 import '../widgets/active_schedule_card.dart';
 import '../widgets/calendar_card.dart';
 import '../widgets/schedule_item.dart';
@@ -25,6 +27,26 @@ class _CalendarViewState
     extends State<CalendarView> {
 
   int currentIndex = 1;
+
+  final CalendarController controller = Get.find();
+
+  IconData _iconForTask(TaskModel task) {
+    switch (task.priority) {
+      case "High":
+        return Iconsax.flash_1;
+      case "Low":
+        return Iconsax.calendar_1;
+      default:
+        return Iconsax.task_square;
+    }
+  }
+
+  void _openTask(TaskModel task) {
+    Get.toNamed(
+      Routes.TASK_DETAIL,
+      arguments: task.id,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +70,10 @@ class _CalendarViewState
         ),
       ),
 
+      floatingActionButtonAnimator:
+          FloatingActionButtonAnimator.noAnimation,
+
       appBar: CustomTopbar(
-        title: "Good morning, Alex",
         icon: Iconsax.calendar_1,
       ),
 
@@ -64,77 +88,143 @@ class _CalendarViewState
       ),
 
       body: SafeArea(
-        
 
-        child: SingleChildScrollView(
+        child: RefreshIndicator(
+          color: AppColors.primary,
+          onRefresh: controller.refresh,
 
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+          child: SingleChildScrollView(
+            physics:
+                const AlwaysScrollableScrollPhysics(),
 
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+child: Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 6, bottom: 24),
 
-              children: [
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
 
-                const CalendarCard(),
+                children: [
 
-                const SizedBox(height: 40),
+                  const CalendarCard(),
 
-                const TodayHeader(),
+                  const SizedBox(height: 10),
 
-                const SizedBox(height: 28),
+                  const TodayHeader(),
 
-                const ScheduleItem(
-                  time: "09:00",
-                  title: "Ritual Pagi",
-                  subtitle: "Meditasi & Jurnal",
-                  icon: Iconsax.sun_1,
-                ),
+                  const SizedBox(height: 28),
 
-                const SizedBox(height: 24),
+                  Obx(() {
 
-                const ActiveScheduleCard(),
+                    if (controller.isLoading.value) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 40,
+                        ),
+                        child: Center(
+                          child:
+                              CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      );
+                    }
 
-                const SizedBox(height: 24),
+                    if (controller
+                        .errorMessage.value.isNotEmpty) {
+                      return Padding(
+                        padding:
+                            const EdgeInsets.symmetric(
+                          vertical: 40,
+                        ),
+                        child: Center(
+                          child: Text(
+                            controller
+                                .errorMessage.value,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xFF8A8395),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
 
-                const ScheduleItem(
-                  time: "14:00",
-                  title: "Review Proyek",
-                  subtitle: "Tim Engineering",
-                  icon: Iconsax.people,
-                ),
+                    final tasks =
+                        controller.tasksForSelectedDate;
+                    final highlighted =
+                        controller.highlightedTask;
 
-                const SizedBox(height: 40),
+                    if (tasks.isEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 40,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Tidak ada tugas pada tanggal ini",
+                            style: TextStyle(
+                              color: Color(0xFF8A8395),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
 
-                Align(
-                  alignment: Alignment.centerRight,
+                    final items = <Widget>[];
 
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 14,
-                    ),
+                    for (final task in tasks) {
 
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(30),
-                    ),
+                      final isHighlighted = highlighted !=
+                              null &&
+                          task.id == highlighted.id;
 
-                    child: const Text(
-                      "Tambah Tugas",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                      items.add(
+                        isHighlighted
+                            ? ActiveScheduleCard(
+                                time: task.startTime ??
+                                    "--:--",
+                                title: task.title,
+                                subtitle:
+                                    task.description ??
+                                        task.priority,
+                                icon: _iconForTask(task),
+                                onTap: () =>
+                                    _openTask(task),
+                              )
+                            : ScheduleItem(
+                                time: task.startTime ??
+                                    "--:--",
+                                title: task.title,
+                                subtitle:
+                                    task.description ??
+                                        task.priority,
+                                icon: _iconForTask(task),
+                                onTap: () =>
+                                    _openTask(task),
+                              ),
+                      );
 
-                const SizedBox(height: 55),
-              ],
+                      items.add(
+                        const SizedBox(height: 24),
+                      );
+                    }
+
+                    // Remove the trailing spacer.
+                    if (items.isNotEmpty) {
+                      items.removeLast();
+                    }
+
+                    return Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: items,
+                    );
+                  }),
+
+                  const SizedBox(height: 55),
+                ],
+              ),
             ),
           ),
         ),

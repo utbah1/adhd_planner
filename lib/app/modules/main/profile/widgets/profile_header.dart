@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ProfileHeader extends StatelessWidget {
+import '../controllers/profile_controller.dart';
 
+class ProfileHeader extends GetView<ProfileController> {
   const ProfileHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return Obx(() {
+      final user = controller.userController.user.value;
 
-    return const Column(
-      children: [
-
-        Text(
-          "Alexx",
-          style: TextStyle(
-            fontSize: 44,
-            fontWeight: FontWeight.bold,
+      return Column(
+        children: [
+          Text(
+            user?.fullname.isNotEmpty == true
+                ? user!.fullname
+                : "Unknown User",
+            style: const TextStyle(
+              fontSize: 29,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
 
-        SizedBox(height: 8),
+          const SizedBox(height: 4),
 
-        Text(
-          "Mindful Productivity Enthusiast",
-          textAlign: TextAlign.center,
-
-          style: TextStyle(
-            fontSize: 18,
-            color: Color(0xFF6A6274),
+          Text(
+            user?.email ?? "",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 17,
+              color: Color(0xFF6A6274),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

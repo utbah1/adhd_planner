@@ -11,15 +11,15 @@ class DioClient {
       baseUrl: ApiConstants.baseUrl,
 
       connectTimeout: const Duration(
-        seconds: 30,
+        seconds: 10,
       ),
 
       receiveTimeout: const Duration(
-        seconds: 30,
+        seconds: 10,
       ),
 
       sendTimeout: const Duration(
-        seconds: 30,
+        seconds: 10,
       ),
 
       responseType: ResponseType.json,

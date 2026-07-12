@@ -26,98 +26,49 @@ class VerifyOtpDialog extends StatefulWidget {
 class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
   static const int otpLength = 5;
 
-  late final List<TextEditingController> controllers;
-  late final List<FocusNode> focusNodes;
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   bool loading = false;
-  int countdown = 60;
+  int countdown = 100;
   Timer? timer;
 
   @override
   void initState() {
     super.initState();
 
-    controllers = List.generate(
-      otpLength,
-      (_) => TextEditingController(),
-    );
+    _focusNode.addListener(() {
+      if (mounted) setState(() {});
+    });
 
-    focusNodes = List.generate(
-      otpLength,
-      (_) => FocusNode(),
-    );
-
-    for (final node in focusNodes) {
-      node.addListener(() {
-        if (mounted) setState(() {});
-      });
-    }
+    _controller.addListener(() {
+      if (mounted) setState(() {});
+    });
 
     startTimer();
   }
 
   void startTimer() {
     timer?.cancel();
-    countdown = 60;
+    countdown = 100;
 
     timer = Timer.periodic(
       const Duration(seconds: 1),
-      (timer) {
+      (t) {
         if (!mounted) {
-          timer.cancel();
+          t.cancel();
           return;
         }
         if (countdown == 0) {
-          timer.cancel();
+          t.cancel();
         } else {
-          setState(() {
-            countdown--;
-          });
+          setState(() => countdown--);
         }
       },
     );
   }
 
-  String get otp => controllers.map((e) => e.text.trim()).join();
-
-  void onOtpChanged(String value, int index) {
-    if (!mounted) return; // guard di awal
-
-    if (value.length > 1) {
-      final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
-
-      for (int i = 0; i < otpLength; i++) {
-        try {
-          controllers[i].text = i < digits.length ? digits[i] : '';
-          controllers[i].selection = TextSelection.fromPosition(
-            TextPosition(offset: controllers[i].text.length),
-          );
-        } catch (e) {
-          return; // sudah dispose
-        }
-      }
-
-      if (mounted) {
-        FocusScope.of(context).unfocus();
-        setState(() {});
-      }
-      return;
-    }
-
-    if (value.isNotEmpty) {
-      if (index < otpLength - 1) {
-        if (mounted) focusNodes[index + 1].requestFocus();
-      } else {
-        if (mounted) FocusScope.of(context).unfocus();
-      }
-    } else {
-      if (index > 0) {
-        if (mounted) focusNodes[index - 1].requestFocus();
-      }
-    }
-
-    if (mounted) setState(() {});
-  }
+  String get otp => _controller.text.trim();
 
   Future<void> verify() async {
     if (!mounted) return;
@@ -144,10 +95,14 @@ class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
 
       if (!mounted) return;
 
-      // Dispose dulu sebelum navigasi
       timer?.cancel();
+      timer = null;
 
-      Get.back();
+      FocusScope.of(context).unfocus();
+
+      Navigator.of(context, rootNavigator: true).pop();
+
+      await Future.delayed(const Duration(milliseconds: 100));
 
       CustomSnackbar.success(
         title: "Berhasil",
@@ -161,9 +116,6 @@ class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
           title: "OTP Salah",
           message: e.toString(),
         );
-      }
-    } finally {
-      if (mounted) {
         setState(() => loading = false);
       }
     }
@@ -179,14 +131,9 @@ class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
 
       if (!mounted) return;
 
-      for (final c in controllers) {
-        c.clear();
-      }
-
-      if (mounted) {
-        focusNodes.first.requestFocus();
-        startTimer();
-      }
+      _controller.clear();
+      _focusNode.requestFocus();
+      startTimer();
 
       CustomSnackbar.success(
         title: "OTP",
@@ -206,65 +153,81 @@ class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
   void dispose() {
     timer?.cancel();
     timer = null;
-
-    for (final f in focusNodes) {
-      f.removeListener(() {}); // hapus listener sebelum dispose
-      f.dispose();
-    }
-
-    for (final c in controllers) {
-      c.dispose();
-    }
-
+    _focusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  Widget otpBox(int index) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: 62,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              width: 2,
-              color: focusNodes[index].hasFocus
-                  ? const Color(0xFF6C63FF)
-                  : Colors.grey.shade300,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: focusNodes[index].hasFocus
-                    ? const Color(0xFF6C63FF).withOpacity(.15)
-                    : Colors.black12,
-                blurRadius: 12,
+  Widget _buildOtpBoxes() {
+    final text = _controller.text;
+    final isFocused = _focusNode.hasFocus;
+
+    return Stack(
+      children: [
+        Row(
+          children: List.generate(otpLength, (i) {
+            final hasChar = i < text.length;
+            final isActive = isFocused &&
+                (i == text.length || (text.length == otpLength && i == otpLength - 1));
+
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  height: 62,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      width: 2,
+                      color: isActive
+                          ? const Color(0xFF6C63FF)
+                          : Colors.grey.shade300,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isActive
+                            ? const Color(0xFF6C63FF).withOpacity(.15)
+                            : Colors.black12,
+                        blurRadius: 12,
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    hasChar ? text[i] : '',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
-            ],
-          ),
-          child: TextField(
-            controller: controllers[index],
-            focusNode: focusNodes[index],
-            textAlign: TextAlign.center,
-            maxLength: otpLength, // bukan 1, agar paste bisa masuk ke onChanged
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+            );
+          }),
+        ),
+
+        /// Hidden TextField transparan di atas boxes
+        Positioned.fill(
+          child: Opacity(
+            opacity: 0,
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              maxLength: otpLength,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                counterText: '',
+              ),
             ),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              counterText: "",
-            ),
-            onChanged: (value) => onOtpChanged(value, index),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -287,22 +250,19 @@ class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(30),
           ),
+
           padding: const EdgeInsets.all(24),
           child: SingleChildScrollView(
             physics: const NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // CLOSE
                 Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(30),
                     onTap: Get.back,
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.grey,
-                    ),
+                    child: const Icon(Icons.close, color: Colors.grey),
                   ),
                 ),
 
@@ -352,22 +312,17 @@ class _VerifyOtpDialogState extends State<VerifyOtpDialog> {
 
                 const SizedBox(height: 28),
 
-                Row(
-                  children: List.generate(
-                    otpLength,
-                    (index) => otpBox(index),
-                  ),
-                ),
+                _buildOtpBoxes(),
 
                 const SizedBox(height: 24),
 
                 Text(
                   countdown == 0
-                      ? "Kode OTP telah habis"
+                      ? "Anda dapat mengirim ulang OTP"
                       : "00:${countdown.toString().padLeft(2, "0")}",
                   style: TextStyle(
                     color: countdown == 0 ? Colors.red : Colors.black87,
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

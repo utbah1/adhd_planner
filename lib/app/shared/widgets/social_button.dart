@@ -5,7 +5,10 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../controller/user_controller.dart';
+import '../../data/models/user_model.dart';
 import '../../routes/app_pages.dart';
+import '../../data/services/auth_service.dart';
 
 class SocialButton extends StatelessWidget {
   const SocialButton({super.key});
@@ -32,19 +35,52 @@ class SocialButton extends StatelessWidget {
         credential,
       );
 
-      // Notifikasi berhasil
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception("User tidak ditemukan");
+      }
+
+      final idToken = await user.getIdToken();
+
+      if (idToken == null) {
+        throw Exception("Gagal mendapatkan ID Token");
+      }
+
+      final loginResponse = await AuthService.googleLogin(idToken);
+
+      final userController = Get.find<UserController>();
+      userController.setUser(
+        UserModel(
+          uid: loginResponse.uid,
+          fullname: loginResponse.fullname,
+          email: loginResponse.email,
+          photoUrl: loginResponse.photoUrl,
+          streak: loginResponse.streak,
+          productivityScore: loginResponse.productivityScore,
+          focusTime: 0,
+          tasksDone: 0,
+        ),
+      );
+
       CustomSnackbar.success(
         title: "Berhasil",
-        message: "Berhasil masuk dengan Google",
+        message: "Berhasil masuk menggunakan Google",
       );
-      Get.toNamed(Routes.DASHBOARD);
 
-    } catch (e) {
-      print("Error login Google: $e");
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      Get.offAllNamed(Routes.DASHBOARD);
+
+    } 
+    catch (e, stackTrace) {
+      debugPrint("===== GOOGLE LOGIN ERROR =====");
+      debugPrint(e.toString());
+      debugPrint(stackTrace.toString());
 
       CustomSnackbar.error(
-        title: "Gagal",
-        message: "Terjadi kesalahan",
+        title: "Google Login",
+        message: e.toString(),
       );
     }
   }

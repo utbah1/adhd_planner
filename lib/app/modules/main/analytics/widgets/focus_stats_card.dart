@@ -29,7 +29,7 @@ class FocusStatsCard extends StatelessWidget {
             color: AppColors.primary,
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 10),
 
           const Text(
             "Statistik Fokus",
@@ -39,17 +39,17 @@ class FocusStatsCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 4),
 
           const Text(
-            "5.2j",
+            "5.2J",
             style: TextStyle(
-              fontSize: 38,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 7),
 
           Text(
             "+12% vs Kemarin",

@@ -1,15 +1,19 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../core/constants/endpoint_constants.dart';
 import '../../core/network/api_response.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/storage/token_storage.dart';
 
+
 import '../models/auth/login_request.dart';
 import '../models/auth/login_response.dart';
 import '../models/auth/register_request.dart';
 import '../models/auth/verify_otp_request.dart';
 import '../models/auth/resend_otp_request.dart';
+
 
 class AuthService {
   AuthService._();
@@ -25,15 +29,21 @@ class AuthService {
         data: request.toJson(),
       );
 
-      final login = LoginResponse.fromJson(
+      final result = ApiResponse<LoginResponse>.fromJson(
         response.data,
+        (json) => LoginResponse.fromJson(json),
       );
+
+      if (!result.success || result.data == null) {
+        throw Exception(result.message ?? "Login gagal");
+      }
 
       await TokenStorage.saveToken(
-        login.accessToken,
+          result.data!.accessToken,
       );
 
-      return login;
+      return result.data!;
+
     } on DioException catch (e) {
       throw Exception(
         e.response?.data["detail"] ??
@@ -99,6 +109,60 @@ class AuthService {
     }
   }
 
+  static Future<LoginResponse> googleLogin(
+    String idToken,
+  ) async {
+
+    try {
+
+      final response = await _dio.post(
+
+        EndpointConstants.googleLogin,
+
+        data: {
+          "id_token": idToken,
+        },
+
+      );
+
+      final result =
+          ApiResponse<LoginResponse>.fromJson(
+
+        response.data,
+
+        (json) => LoginResponse.fromJson(json),
+
+      );
+
+      if (!result.success ||
+          result.data == null) {
+
+        throw Exception(
+          result.message ??
+              "Google Login gagal",
+        );
+
+      }
+
+      await TokenStorage.saveToken(
+        result.data!.accessToken,
+      );
+
+      return result.data!;
+
+    } on DioException catch (e) {
+
+      throw Exception(
+
+        e.response?.data["detail"] ??
+            "Google Login gagal",
+
+      );
+
+    }
+
+  }
+
   static Future<void> resendOtp(
     ResendOtpRequest request,
   ) async {
@@ -128,9 +192,20 @@ class AuthService {
 
   static Future<void> logout() async {
     try {
-      // Nanti kalau backend punya endpoint logout,
-      // request API bisa ditambahkan di sini.
+      /// Logout Firebase
+      await FirebaseAuth.instance.signOut();
 
+      /// Logout Google
+      final googleSignIn = GoogleSignIn();
+
+      await googleSignIn.signOut();
+
+      /// Putuskan akses agar account picker muncul lagi
+      try {
+        await googleSignIn.disconnect();
+      } catch (_) {}
+
+      /// Hapus JWT aplikasi
       await TokenStorage.clearToken();
     } catch (_) {
       await TokenStorage.clearToken();

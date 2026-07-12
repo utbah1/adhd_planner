@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../../routes/app_pages.dart';
 
+import '../../../../shared/widgets/manual_task_sheet.dart';
 import '../../../../shared/widgets2/custom_topbar_feature.dart';
 
 import '../widgets/input_card.dart';
@@ -96,12 +97,19 @@ class _AddTaskViewState
                 const SizedBox(height: 24),
 
                 /// MANUAL
-                const InputCard(
-                  icon: Iconsax.edit_2,
-                  title: "Manual\nTyping",
+                GestureDetector(
 
-                  subtitle:
-                      "Write down your\ntasks with full\nformatting control.",
+                  onTap: () {
+                    showManualTaskSheet(context);
+                  },
+
+                  child: const InputCard(
+                    icon: Iconsax.edit_2,
+                    title: "Manual\nTyping",
+
+                    subtitle:
+                        "Write down your\ntasks with full\nformatting control.",
+                  ),
                 ),
 
                 const SizedBox(height: 30),

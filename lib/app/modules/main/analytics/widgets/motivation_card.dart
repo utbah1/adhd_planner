@@ -18,7 +18,7 @@ class MotivationCard extends StatelessWidget {
 
         image: const DecorationImage(
           image: AssetImage(
-            'assets/images/onboard.png',
+            'assets/images/onboarding2.jpeg',
           ),
           fit: BoxFit.cover,
         ),

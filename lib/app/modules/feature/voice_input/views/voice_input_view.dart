@@ -5,7 +5,6 @@ import '../../../../shared/widgets2/custom_topbar_feature.dart';
 
 import '../widgets/bottom_actions.dart';
 import '../widgets/mic_button.dart';
-///import '../widgets/quick_actions_section.dart';
 import '../widgets/speech_card.dart';
 import '../widgets/waveform_section.dart';
 

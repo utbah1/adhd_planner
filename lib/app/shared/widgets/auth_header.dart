@@ -17,23 +17,12 @@ class AuthHeader extends StatelessWidget {
     return Column(
       children: [
 
-        Container(
-          width: 90,
-          height: 90,
-
-          decoration: BoxDecoration(
-            color: const Color(0xFF8B3DFF),
-            borderRadius: BorderRadius.circular(50),
-          ),
-
-          child: const Icon(
-            Icons.psychology_alt,
-            color: Colors.white,
-            size: 40,
-          ),
+        Image.asset(
+          'assets/images/logo.png',
+          fit: BoxFit.contain,
+          width: 175,
+          height: 175,
         ),
-
-        const SizedBox(height: 20),
 
         Text(
           title,

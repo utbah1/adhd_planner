@@ -37,7 +37,7 @@ class ProfileStatCard extends StatelessWidget {
             size: 28,
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 12),
 
           Text(
             value,

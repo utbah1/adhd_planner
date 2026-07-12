@@ -36,7 +36,6 @@ class _AnalyticsViewState
       backgroundColor: const Color(0xFFF6F4FA),
 
       appBar: CustomTopbar(
-        title: "Good morning, Alex",
         icon: Iconsax.chart_2,
       ),
       
@@ -55,7 +54,7 @@ class _AnalyticsViewState
         child: SingleChildScrollView(
 
           child: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 10, bottom: 24),
 
             child: Column(
               crossAxisAlignment:
@@ -65,11 +64,11 @@ class _AnalyticsViewState
 
                 const PageHeader(),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
 
                 const AnalyticsChartCard(),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 15),
 
                 Row(
                   children: [
@@ -78,7 +77,7 @@ class _AnalyticsViewState
                       child: FocusStatsCard(),
                     ),
 
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 15),
 
                     const Expanded(
                       child: WeeklyTargetCard(),
@@ -86,7 +85,7 @@ class _AnalyticsViewState
                   ],
                 ),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 15),
 
                 Row(
                   mainAxisAlignment:
@@ -97,7 +96,7 @@ class _AnalyticsViewState
                     const Text(
                       "Efisiensi Harian",
                       style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -112,7 +111,7 @@ class _AnalyticsViewState
                   ],
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 15),
 
                 const EfficiencyItem(
                   title: "Deep Work",
@@ -131,11 +130,10 @@ class _AnalyticsViewState
                   icon: Iconsax.sun_1,
                 ),
 
-                const SizedBox(height: 35),
+                const SizedBox(height: 15),
 
                 const MotivationCard(),
 
-                const SizedBox(height: 10),
               ],
             ),
           ),

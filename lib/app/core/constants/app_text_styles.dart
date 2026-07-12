@@ -12,7 +12,7 @@ class AppTextStyles {
   );
 
   static final title = GoogleFonts.poppins(
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: AppColors.textDark,
   );

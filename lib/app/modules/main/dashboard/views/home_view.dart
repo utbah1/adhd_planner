@@ -7,6 +7,7 @@ import '../../../../routes/app_pages.dart';
 import '../../../../shared/widgets2/custom_navbar.dart';
 
 import '../../../../shared/widgets2/custom_topbar.dart';
+import '../controllers/home_controller.dart';
 import '../widgets/active_timeline_card.dart';
 import '../widgets/ai_insight_card.dart';
 import '../widgets/efficiency_card.dart';
@@ -25,6 +26,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   int currentIndex = 0;
+
+  final HomeController controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +58,10 @@ class _HomeViewState extends State<HomeView> {
       floatingActionButtonLocation:
           FloatingActionButtonLocation.endFloat,
 
+      floatingActionButtonAnimator:
+          FloatingActionButtonAnimator.noAnimation,
+
       appBar: CustomTopbar(
-        title: "Good morning, Alex",
         icon: Iconsax.element_4,
       ),
 
@@ -72,127 +77,186 @@ class _HomeViewState extends State<HomeView> {
 
       body: SafeArea(
 
-        child: SingleChildScrollView(
+        child: RefreshIndicator(
+          onRefresh: controller.refresh,
 
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 6, bottom: 24),
 
-              children: [
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-                const AiInsightCard(),
+                children: [
 
-                const SizedBox(height: 30),
+                  const AiInsightCard(),
 
-                Row(
-                  children: [
+                  Obx(() {
+                    if (controller.isLoading.value) {
+                      return const SizedBox(
+                        height: 240,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
 
-                    const Expanded(
-                      child: StatCard(),
-                    ),
+                    if (controller.errorMessage.value.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(20),
 
-                    const SizedBox(width: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
 
-                    const Expanded(
-                      child: EfficiencyCard(),
-                    ),
-                  ],
-                ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                const SizedBox(height: 35),
+                          children: [
+                            Text(
+                              controller.errorMessage.value,
+                              style: const TextStyle(
+                                color: Colors.redAccent,
+                              ),
+                            ),
 
-                /// DAILY RITUALS
-                Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                            const SizedBox(height: 12),
 
-                  children: [
+                            TextButton(
+                              onPressed: controller.refresh,
+                              child: const Text("Coba lagi"),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
 
-                    const Text(
-                      "Daily Rituals",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    final dashboard = controller.dashboard.value;
+                    final weekly = controller.weekly.value;
 
-                    Text(
-                      "Edit",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                    return Column(
+                      children: [
+                        const SizedBox(height: 15),
+                        Row(
+                      children: [
 
-                const SizedBox(height: 20),
+                        Expanded(
+                          child: StatCard(
+                            completedTasks:
+                                dashboard?.completedTasks ?? 0,
+                            totalTasks: dashboard?.totalTasks ?? 0,
+                          ),
+                        ),
 
-                const SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                        const SizedBox(width: 20),
 
-                  child: Row(
+                        Expanded(
+                          child: EfficiencyCard(
+                            weeklyMinutes: weekly?.toChartMap(),
+                          ),
+                        ),
+                      ],
+                        ),
+                      ],
+                    );
+                  }),
+
+                  const SizedBox(height: 20),
+
+                  /// DAILY RITUALS
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+
                     children: [
 
-                      RitualCard(
-                        title: "Mindful Morning",
-                        time: "10 min",
-                        icon: Iconsax.sun_1,
+                      const Text(
+                        "Daily Rituals",
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
 
-                      SizedBox(width: 16),
-
-                      RitualCard(
-                        title: "Focus Break",
-                        time: "5 min",
-                        icon: Iconsax.coffee,
+                      Text(
+                        "Edit",
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
-                ),
 
-                const SizedBox(height: 40),
+                  const SizedBox(height: 15),
 
-                const Text(
-                  "Today's Timeline",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+                  const SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+
+                    child: Row(
+                      children: [
+
+                        RitualCard(
+                          title: "Mindful Morning",
+                          time: "10 min",
+                          icon: Iconsax.sun_1,
+                        ),
+
+                        SizedBox(width: 16),
+
+                        RitualCard(
+                          title: "Focus Break",
+                          time: "5 min",
+                          icon: Iconsax.coffee,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 25),
+                  const SizedBox(height: 20),
 
-                const TimelineCard(
-                  time: "08:00 AM - 09:00 AM",
-                  title: "Morning Rituals",
-                  icon: Iconsax.tick_circle,
-                ),
+                  const Text(
+                    "Today's Timeline",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 15),
 
-                const ActiveTimelineCard(),
+                  const TimelineCard(
+                    time: "08:00 AM - 09:00 AM",
+                    title: "Morning Rituals",
+                    icon: Iconsax.tick_circle,
+                  ),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                const TimelineCard(
-                  time: "01:00 PM - 02:00 PM",
-                  title: "Sync Meeting",
-                  icon: Iconsax.people,
-                ),
+                  const ActiveTimelineCard(),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                const TimelineCard(
-                  time: "03:30 PM - 04:30 PM",
-                  title: "Inbox Zero",
-                  icon: Iconsax.sms,
-                ),
+                  const TimelineCard(
+                    time: "01:00 PM - 02:00 PM",
+                    title: "Sync Meeting",
+                    icon: Iconsax.people,
+                  ),
 
-                const SizedBox(height: 55),
-              ],
+                  const SizedBox(height: 20),
+
+                  const TimelineCard(
+                    time: "03:30 PM - 04:30 PM",
+                    title: "Inbox Zero",
+                    icon: Iconsax.sms,
+                  ),
+
+                  const SizedBox(height: 55),
+                ],
+              ),
             ),
           ),
         ),

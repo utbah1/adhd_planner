@@ -1,16 +1,11 @@
 import 'package:get/get.dart';
 
-/// MAIN
-import '../modules/main/dashboard/bindings/home_binding.dart';
-import '../modules/main/dashboard/views/home_view.dart';
-import '../modules/main/profile/bindings/profile_binding.dart';
-import '../modules/main/profile/views/profile_view.dart';
-import '../modules/main/analytics/bindings/analytics_binding.dart';
-import '../modules/main/analytics/views/analytics_view.dart';
-import '../modules/main/calendar/bindings/calendar_binding.dart';
-import '../modules/main/calendar/views/calendar_view.dart';
-
-/// FEATURE
+import '../modules/auth/login/bindings/login_binding.dart';
+import '../modules/auth/login/views/login_view.dart';
+import '../modules/auth/onboarding/bindings/onboarding_binding.dart';
+import '../modules/auth/onboarding/views/onboarding_view.dart';
+import '../modules/auth/register/bindings/register_binding.dart';
+import '../modules/auth/register/views/register_view.dart';
 import '../modules/feature/add_task/bindings/add_task_binding.dart';
 import '../modules/feature/add_task/views/add_task_view.dart';
 import '../modules/feature/focus_mode/bindings/focus_mode_binding.dart';
@@ -19,17 +14,26 @@ import '../modules/feature/image_input/bindings/image_input_binding.dart';
 import '../modules/feature/image_input/views/image_input_view.dart';
 import '../modules/feature/voice_input/bindings/voice_input_binding.dart';
 import '../modules/feature/voice_input/views/voice_input_view.dart';
-
-/// AUTH
-import '../modules/auth/login/bindings/login_binding.dart';
-import '../modules/auth/login/views/login_view.dart';
-import '../modules/auth/onboarding/bindings/onboarding_binding.dart';
-import '../modules/auth/onboarding/views/onboarding_view.dart';
-import '../modules/auth/register/bindings/register_binding.dart';
-import '../modules/auth/register/views/register_view.dart';
+import '../modules/main/analytics/bindings/analytics_binding.dart';
+import '../modules/main/analytics/views/analytics_view.dart';
+import '../modules/main/calendar/bindings/calendar_binding.dart';
+import '../modules/main/calendar/views/calendar_view.dart';
+import '../modules/main/dashboard/bindings/home_binding.dart';
+import '../modules/main/dashboard/views/home_view.dart';
+import '../modules/main/profile/bindings/profile_binding.dart';
+import '../modules/main/profile/views/profile_view.dart';
+import '../modules/main/profile/views/personal_info_view.dart';
+import '../modules/main/profile/views/security_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/feature/task_detail/bindings/task_detail_binding.dart';
+import '../modules/feature/task_detail/views/task_detail_view.dart';
 
+/// MAIN
+
+/// FEATURE
+
+/// AUTH
 
 part 'app_routes.dart';
 
@@ -79,6 +83,17 @@ class AppPages {
       page: () => const ProfileView(),
       binding: ProfileBinding(),
     ),
+
+    GetPage(
+      name: _Paths.PERSONAL_INFO,
+      page: () => const PersonalInfoView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.SECURITY,
+      page: () => const SecurityView(),
+      binding: ProfileBinding(),
+    ),
     GetPage(
       name: _Paths.ADD_TASK,
       page: () => const AddTaskView(),
@@ -98,6 +113,12 @@ class AppPages {
       name: _Paths.FOCUS_MODE,
       page: () => const FocusModeView(),
       binding: FocusModeBinding(),
+    ),
+    GetPage(
+      name: _Paths.TASK_DETAIL,
+      page: () => const TaskDetailView(),
+      binding: TaskDetailBinding(),
+      preventDuplicates: false,
     ),
   ];
 }

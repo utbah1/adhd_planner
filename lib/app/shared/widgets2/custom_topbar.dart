@@ -3,16 +3,18 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import 'package:get/get.dart';
+
+import '../../core/utils/greeting_helper.dart';
+import '../../controller/user_controller.dart';
 
 class CustomTopbar extends StatelessWidget
     implements PreferredSizeWidget {
 
-  final String title;
   final IconData icon;
 
   const CustomTopbar({
     super.key,
-    required this.title,
     required this.icon,
   });
 
@@ -22,6 +24,9 @@ class CustomTopbar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+
+    final userController =
+        Get.find<UserController>();
 
     return ClipRRect(
 
@@ -100,28 +105,81 @@ class CustomTopbar extends StatelessWidget
 
                 /// TITLE
                 Expanded(
-                  child: Text(
-                    title,
+                  child: Obx(() {
 
-                    overflow:
-                        TextOverflow.ellipsis,
+                    final user =
+                        userController.user.value;
 
-                    maxLines: 1,
+                    return Column(
 
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
 
-                      shadows: [
-                        Shadow(
-                          color: Colors.white
-                              .withOpacity(.4),
-                          blurRadius: 10,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+
+                      children: [
+
+                        Text(
+
+                          GreetingHelper.greeting(),
+
+                          style: TextStyle(
+
+                            fontSize: 13,
+
+                            color: Colors.grey.shade700,
+
+                            fontWeight:
+                                FontWeight.w500,
+
+                          ),
+
                         ),
+
+                        const SizedBox(height: 2),
+
+                        Text(
+
+                          user?.fullname ?? "Guest",
+
+                          overflow:
+                              TextOverflow.ellipsis,
+
+                          maxLines: 1,
+
+                          style: TextStyle(
+
+                            fontSize: 21,
+
+                            fontWeight:
+                                FontWeight.w700,
+
+                            color:
+                                AppColors.primary,
+
+                            shadows: [
+
+                              Shadow(
+
+                                color: Colors.white
+                                    .withOpacity(.4),
+
+                                blurRadius: 10,
+
+                              ),
+
+                            ],
+
+                          ),
+
+                        ),
+
                       ],
-                    ),
-                  ),
+
+                    );
+
+                  }),
                 ),
               ],
             ),

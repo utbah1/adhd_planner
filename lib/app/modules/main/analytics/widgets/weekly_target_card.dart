@@ -30,7 +30,7 @@ class WeeklyTargetCard
             color: AppColors.primary,
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 6),
 
           const Text(
             "Target\nMingguan",
@@ -40,17 +40,17 @@ class WeeklyTargetCard
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 4),
 
           const Text(
             "24/30",
             style: TextStyle(
-              fontSize: 37,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
 
           Container(
             height: 8,
@@ -72,6 +72,16 @@ class WeeklyTargetCard
                       BorderRadius.circular(10),
                 ),
               ),
+            ),
+          ),
+
+          const SizedBox(height: 5),
+
+          Text(
+            "Selesaikan 4 Task Lagi",
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

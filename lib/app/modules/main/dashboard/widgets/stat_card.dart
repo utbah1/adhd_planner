@@ -3,8 +3,19 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class StatCard extends StatelessWidget {
+  final int completedTasks;
+  final int totalTasks;
 
-  const StatCard({super.key});
+  const StatCard({
+    super.key,
+    this.completedTasks = 6,
+    this.totalTasks = 8,
+  });
+
+  int get _percentage {
+    if (totalTasks <= 0) return 0;
+    return ((completedTasks / totalTasks) * 100).round();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +45,10 @@ class StatCard extends StatelessWidget {
               ),
             ),
 
-            child: const Center(
+            child: Center(
               child: Text(
-                "75%",
-                style: TextStyle(
+                "$_percentage%",
+                style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
@@ -46,21 +57,21 @@ class StatCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
 
           const Text(
             "Daily Goal",
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 23,
               fontWeight: FontWeight.bold,
             ),
           ),
 
           const SizedBox(height: 8),
 
-          const Text(
-            "6 of 8 tasks done",
-            style: TextStyle(
+          Text(
+            "$completedTasks of $totalTasks tasks done",
+            style: const TextStyle(
               color: Color(0xFF5B5563),
             ),
           ),

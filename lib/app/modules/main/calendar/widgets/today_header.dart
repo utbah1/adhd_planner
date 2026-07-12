@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../../core/utils/date_formatter.dart';
+import '../controllers/calendar_controller.dart';
 
 class TodayHeader extends StatelessWidget {
 
@@ -7,20 +11,29 @@ class TodayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return const Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
+    final CalendarController controller = Get.find();
 
-      children: [
+    return Obx(
+      () => Row(
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween,
 
-        Text(
-          "Agenda Hari Ini",
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
+        children: [
+
+          Text(
+            controller.isSelectedToday
+                ? "  Agenda Hari Ini"
+                : "  Agenda ${DateFormatter.shortDate(
+                    controller.selectedDate.value,
+                  )}",
+
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

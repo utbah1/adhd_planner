@@ -10,11 +10,14 @@ abstract class Routes {
   static const CALENDAR = _Paths.CALENDAR;
   static const ANALYTICS = _Paths.ANALYTICS;
   static const PROFILE = _Paths.PROFILE;
+  static const PERSONAL_INFO = _Paths.PERSONAL_INFO;
+  static const SECURITY = _Paths.SECURITY;
   static const ADD_TASK = _Paths.ADD_TASK;
   static const VOICE_INPUT = _Paths.VOICE_INPUT;
   static const IMAGE_INPUT = _Paths.IMAGE_INPUT;
   static const FOCUS_MODE = _Paths.FOCUS_MODE;
   static const SPLASH = _Paths.SPLASH;
+  static const TASK_DETAIL = _Paths.TASK_DETAIL;
 }
 
 abstract class _Paths {
@@ -26,9 +29,12 @@ abstract class _Paths {
   static const CALENDAR = '/calendar';
   static const ANALYTICS = '/analytics';
   static const PROFILE = '/profile';
+  static const PERSONAL_INFO = '/profile/personal-info';
+  static const SECURITY = '/profile/security';
   static const ADD_TASK = '/add-task';
   static const VOICE_INPUT = '/voice-input';
   static const IMAGE_INPUT = '/image-input';
   static const FOCUS_MODE = '/focus-mode';
   static const SPLASH = "/splash";
+  static const TASK_DETAIL = '/task-detail';
 }

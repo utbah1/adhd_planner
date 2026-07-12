@@ -51,7 +51,7 @@ class AnalyticsChartCard
                   Text(
                     "87%",
                     style: TextStyle(
-                      fontSize: 42,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
                     ),

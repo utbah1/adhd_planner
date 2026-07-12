@@ -35,7 +35,7 @@ class _LoginViewState
         child: SingleChildScrollView(
 
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(10),
 
             child: Column(
 

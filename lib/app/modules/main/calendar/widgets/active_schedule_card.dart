@@ -6,116 +6,139 @@ import '../../../../core/constants/app_colors.dart';
 class ActiveScheduleCard
     extends StatelessWidget {
 
-  const ActiveScheduleCard({super.key});
+  final String time;
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  const ActiveScheduleCard({
+    super.key,
+    this.time = "10:30",
+    this.title = "Deep Work Session",
+    this.subtitle = "Design UI App Baru",
+    this.icon = Iconsax.scan,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
 
-    return Row(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onTap,
 
-      children: [
+      child: Row(
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
 
-        const SizedBox(
-          width: 70,
+        children: [
 
-          child: Text(
-            "10:30",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
+          SizedBox(
+            width: 70,
+
+            child: Text(
+              time,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
             ),
           ),
-        ),
 
-        Container(
-          width: 2,
-          height: 110,
-          color: const Color(0xFFE5E5EA),
-        ),
+          Container(
+            width: 2,
+            height: 110,
+            color: const Color(0xFFE5E5EA),
+          ),
 
-        const SizedBox(width: 20),
+          const SizedBox(width: 20),
 
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(24),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(24),
 
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  AppColors.primary,
-                  Color(0xFFA855F7),
-                ],
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    AppColors.primary,
+                    Color(0xFFA855F7),
+                  ],
+                ),
+
+                borderRadius:
+                    BorderRadius.circular(26),
               ),
 
-              borderRadius:
-                  BorderRadius.circular(26),
-            ),
+              child: Row(
+                children: [
 
-            child: Row(
-              children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
 
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                      children: [
 
-                    children: [
+                        Text(
+                          title,
 
-                      const Text(
-                        "Deep Work Session",
+                          overflow:
+                              TextOverflow.ellipsis,
 
-                        overflow:
-                            TextOverflow.ellipsis,
+                          maxLines: 1,
 
-                        maxLines: 1,
-
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight:
-                              FontWeight.bold,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      const Text(
-                        "Design UI App Baru",
-                        style: TextStyle(
-                          color: Colors.white70,
+                        Text(
+                          subtitle,
+
+                          overflow:
+                              TextOverflow.ellipsis,
+
+                          maxLines: 1,
+
+                          style: const TextStyle(
+                            color: Colors.white70,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(width: 12),
+                  const SizedBox(width: 12),
 
-                Container(
-                  width: 55,
-                  height: 55,
+                  Container(
+                    width: 55,
+                    height: 55,
 
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.white24,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white24,
+                      ),
+
+                      shape: BoxShape.circle,
                     ),
 
-                    shape: BoxShape.circle,
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                    ),
                   ),
-
-                  child: const Icon(
-                    Iconsax.scan,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

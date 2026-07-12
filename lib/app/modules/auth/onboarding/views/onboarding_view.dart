@@ -1,128 +1,167 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_text_styles.dart';
-import '../../../../routes/app_pages.dart';
-import '../../../../shared/widgets/custom_button.dart';
-import '../../../../data/services/session_service.dart';
+import '../controllers/onboarding_controller.dart';
+import '../widgets/onboarding_page.dart';
 
-class OnboardingView extends StatelessWidget {
+class OnboardingView
+    extends GetView<OnboardingController> {
+
   const OnboardingView({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
+      backgroundColor: Colors.white,
+
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
 
-                const SizedBox(height: 20),
+        child: Column(
 
-                Image.asset(
-                  'assets/images/onboard.png',
-                  height: MediaQuery.of(context).size.height * 0.32,
-                  fit: BoxFit.contain,
+          children: [
+
+            Align(
+
+              alignment: Alignment.centerRight,
+
+              child: TextButton(
+
+                onPressed: controller.skip,
+
+                child: const Text(
+                  "Skip",
+                  style: TextStyle(color: Colors.white),
                 ),
 
-                const SizedBox(height: 40),
+              ),
 
-                Text(
-                  "Focus on what\nmatters.",
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.heading,
+            ),
+
+            Expanded(
+
+              child: PageView.builder(
+
+                controller:
+                    controller.pageController,
+
+                itemCount:
+                    controller.pages.length,
+
+                onPageChanged:
+                    controller.onPageChanged,
+
+                itemBuilder: (_, index) {
+
+                  final item =
+                      controller.pages[index];
+
+                  return OnboardingPage(
+                    image: item.image,
+                    title: item.title,
+                    description:
+                        item.description,
+                  );
+
+                },
+
+              ),
+
+            ),
+
+            Obx(
+              () => AnimatedSmoothIndicator(
+
+                activeIndex:
+                    controller.currentPage.value,
+
+                count:
+                    controller.pages.length,
+
+                effect: ExpandingDotsEffect(
+
+                  activeDotColor:
+                      AppColors.primary,
+
+                  dotColor:
+                      AppColors.border,
+
+                  dotHeight: 8,
+
+                  dotWidth: 8,
+
+                  expansionFactor: 3,
+
                 ),
 
-                const SizedBox(height: 20),
+              ),
+            ),
 
-                Text(
-                  "Quiet the noise and find your flow state\nwith a workspace designed for your\nbrain.",
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.subtitle,
-                ),
+            const SizedBox(height: 40),
 
-                const SizedBox(height: 35),
+            Padding(
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 24,
+              ),
 
-                    Container(
-                      width: 35,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+
+                width: double.infinity,
+
+                height: 58,
+
+                child: ElevatedButton(
+
+                  onPressed:
+                      controller.nextPage,
+
+                  style:
+                      ElevatedButton.styleFrom(
+
+                    backgroundColor:
+                        AppColors.primary,
+
+                    shape:
+                        RoundedRectangleBorder(
+
+                      borderRadius:
+                          BorderRadius.circular(
+                        18,
                       ),
+
                     ),
 
-                    const SizedBox(width: 6),
+                  ),
 
-                    circle(),
-
-                    const SizedBox(width: 6),
-
-                    circle(),
-                  ],
-                ),
-
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                ),
-
-                CustomButton(
-                  text: "Get Started →",
-                  onTap: () async {
-
-                    await SessionService.finishOnboarding();
-
-                    Get.offAllNamed(
-                      Routes.REGISTER,
-                    );
-
-                  },
-                ),
-
-                const SizedBox(height: 25),
-
-                GestureDetector(
-                  onTap: () async {
-
-                    await SessionService.finishOnboarding();
-                    
-                    Get.offAllNamed(
-                      Routes.LOGIN,
-                    );
-                  },
-                  child: const Text(
-                    "Already have an account? Sign In",
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
+                    child: Obx(
+                    () => Text(
+                      controller.currentPage.value == 1
+                        ? "Get Started"
+                        : "Next",
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
+
                 ),
 
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+              ),
 
-  Widget circle() {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: const BoxDecoration(
-        color: Color(0xFFDADADA),
-        shape: BoxShape.circle,
+            ),
+
+            const SizedBox(height: 30),
+
+          ],
+
+        ),
+
       ),
+
     );
+
   }
 }

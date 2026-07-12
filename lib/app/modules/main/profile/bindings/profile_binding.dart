@@ -7,6 +7,7 @@ class ProfileBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<ProfileController>(
       () => ProfileController(),
+      fenix: true, // keep alive agar reusable di personal_info & security
     );
   }
 }

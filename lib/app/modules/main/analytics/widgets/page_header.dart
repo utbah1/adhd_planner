@@ -16,18 +16,18 @@ class PageHeader extends StatelessWidget {
         Text(
           "Analitik Produktivitas",
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             height: 1.2,
             fontWeight: FontWeight.bold,
           ),
         ),
 
-        SizedBox(height: 16),
+        SizedBox(height: 5),
 
         Text(
-          "Lacak Kemajuan dan optimalkan ritme kerja Anda.",
+          "Lacak Kemajuan Dan Optimalkan \nRitme Kerja Anda.",
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16,
             height: 1.6,
             color: Color(0xFF5B5563),
           ),

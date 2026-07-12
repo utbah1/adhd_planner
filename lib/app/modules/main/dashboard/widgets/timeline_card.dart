@@ -54,7 +54,7 @@ class TimelineCard extends StatelessWidget {
                   maxLines: 1,
 
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
