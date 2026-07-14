@@ -1,74 +1,98 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+
+import '../../../../core/constants/app_colors.dart';
 
 class TimelineCard extends StatelessWidget {
 
-  final String time;
+  final String timeRange;
   final String title;
-  final IconData icon;
+  final String subtitle;
+  final bool isCompleted;
+  final VoidCallback? onTap;
 
   const TimelineCard({
     super.key,
-    required this.time,
+    required this.timeRange,
     required this.title,
-    required this.icon,
+    this.subtitle = "",
+    this.isCompleted = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
+    return GestureDetector(
+      onTap: onTap,
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-      ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
 
-      child: Row(
-        mainAxisAlignment:
-            MainAxisAlignment.spaceBetween,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
 
-        children: [
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+          children: [
 
-              children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-                Text(
-                  time,
-                  style: const TextStyle(
-                    color: Color(0xFF8A8395),
+                children: [
+
+                  Text(
+                    timeRange,
+                    style: const TextStyle(
+                      color: Color(0xFF8A8395),
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-                Text(
-                  title,
-
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+
+                  if (subtitle.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        color: Color(0xFF8A8395),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ),
 
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          Icon(
-            icon,
-            color: const Color(0xFF6A6274),
-          ),
-        ],
+            Icon(
+              isCompleted
+                  ? Iconsax.tick_circle5
+                  : Iconsax.record_circle,
+              color: isCompleted
+                  ? AppColors.primary
+                  : const Color(0xFF6A6274),
+            ),
+          ],
+        ),
       ),
     );
   }

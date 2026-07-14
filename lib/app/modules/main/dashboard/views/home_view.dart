@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../data/models/task/task_model.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../shared/widgets2/custom_navbar.dart';
-
 import '../../../../shared/widgets2/custom_topbar.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/active_timeline_card.dart';
@@ -28,6 +28,19 @@ class _HomeViewState extends State<HomeView> {
   int currentIndex = 0;
 
   final HomeController controller = Get.find<HomeController>();
+
+  void _openTask(TaskModel task) {
+    Get.toNamed(
+      Routes.TASK_DETAIL,
+      arguments: task.id,
+    );
+  }
+
+  /// Builds the time-range label (e.g. "09:00 - 10:00") from a task.
+  String _timeRange(TaskModel task) {
+    if (task.startTime == null) return "--:--";
+    return task.displayTime.isNotEmpty ? task.displayTime : task.startTime!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +97,12 @@ class _HomeViewState extends State<HomeView> {
             physics: const AlwaysScrollableScrollPhysics(),
 
             child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24, top: 6, bottom: 24),
+              padding: const EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 6,
+                bottom: 24,
+              ),
 
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +111,7 @@ class _HomeViewState extends State<HomeView> {
 
                   const AiInsightCard(),
 
+                  // ── Stats + Efficiency ──────────────────────
                   Obx(() {
                     if (controller.isLoading.value) {
                       return const SizedBox(
@@ -135,30 +154,31 @@ class _HomeViewState extends State<HomeView> {
                     }
 
                     final dashboard = controller.dashboard.value;
-                    final weekly = controller.weekly.value;
+                    final weekly    = controller.weekly.value;
 
                     return Column(
                       children: [
                         const SizedBox(height: 15),
                         Row(
-                      children: [
+                          children: [
 
-                        Expanded(
-                          child: StatCard(
-                            completedTasks:
-                                dashboard?.completedTasks ?? 0,
-                            totalTasks: dashboard?.totalTasks ?? 0,
-                          ),
-                        ),
+                            Expanded(
+                              child: StatCard(
+                                completedTasks:
+                                    dashboard?.completedTasks ?? 0,
+                                totalTasks:
+                                    dashboard?.totalTasks ?? 0,
+                              ),
+                            ),
 
-                        const SizedBox(width: 20),
+                            const SizedBox(width: 20),
 
-                        Expanded(
-                          child: EfficiencyCard(
-                            weeklyMinutes: weekly?.toChartMap(),
-                          ),
-                        ),
-                      ],
+                            Expanded(
+                              child: EfficiencyCard(
+                                weeklyMinutes: weekly?.toChartMap(),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     );
@@ -166,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
 
                   const SizedBox(height: 20),
 
-                  /// DAILY RITUALS
+                  // ── Daily Rituals ───────────────────────────
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
@@ -218,6 +238,7 @@ class _HomeViewState extends State<HomeView> {
 
                   const SizedBox(height: 20),
 
+                  // ── Today's Timeline ────────────────────────
                   const Text(
                     "Today's Timeline",
                     style: TextStyle(
@@ -228,31 +249,99 @@ class _HomeViewState extends State<HomeView> {
 
                   const SizedBox(height: 15),
 
-                  const TimelineCard(
-                    time: "08:00 AM - 09:00 AM",
-                    title: "Morning Rituals",
-                    icon: Iconsax.tick_circle,
-                  ),
+                  Obx(() {
 
-                  const SizedBox(height: 20),
+                    // Tunggu loading selesai
+                    if (controller.isLoading.value) {
+                      return const SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
 
-                  const ActiveTimelineCard(),
+                    final tasks      = controller.todayTasks;
+                    final highlighted = controller.highlightedTask;
 
-                  const SizedBox(height: 20),
+                    // Tidak ada task hari ini
+                    if (tasks.isEmpty) {
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(28),
 
-                  const TimelineCard(
-                    time: "01:00 PM - 02:00 PM",
-                    title: "Sync Meeting",
-                    icon: Iconsax.people,
-                  ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
 
-                  const SizedBox(height: 20),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Iconsax.calendar_tick,
+                              size: 40,
+                              color: AppColors.primary.withOpacity(.4),
+                            ),
 
-                  const TimelineCard(
-                    time: "03:30 PM - 04:30 PM",
-                    title: "Inbox Zero",
-                    icon: Iconsax.sms,
-                  ),
+                            const SizedBox(height: 12),
+
+                            const Text(
+                              "Tidak ada tugas hari ini",
+                              style: TextStyle(
+                                color: Color(0xFF8A8395),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final items = <Widget>[];
+
+                    for (final task in tasks) {
+                      final isHighlighted =
+                          highlighted != null &&
+                          task.id == highlighted.id;
+
+                      if (isHighlighted) {
+                        // countdownFor dipanggil langsung di dalam Obx
+                        // sehingga tiap timer tick (_now berubah) nilai ini
+                        // ikut re-evaluate secara reaktif.
+                        items.add(
+                          GestureDetector(
+                            onTap: () => _openTask(task),
+                            child: ActiveTimelineCard(
+                              timeRange: _timeRange(task),
+                              title: task.title,
+                              subtitle:
+                                  task.description ?? task.priority,
+                              countdown: controller.countdownFor(task),
+                            ),
+                          ),
+                        );
+                      } else {
+                        items.add(
+                          TimelineCard(
+                            timeRange: _timeRange(task),
+                            title: task.title,
+                            subtitle:
+                                task.description ?? task.priority,
+                            isCompleted: task.isCompleted,
+                            onTap: () => _openTask(task),
+                          ),
+                        );
+                      }
+
+                      items.add(const SizedBox(height: 20));
+                    }
+
+                    if (items.isNotEmpty) items.removeLast();
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: items,
+                    );
+                  }),
 
                   const SizedBox(height: 55),
                 ],

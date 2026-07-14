@@ -2,7 +2,7 @@ class ApiConstants {
   ApiConstants._();
 
   static const String baseUrl =
-      "http://172.168.2.238:8000";
+      "https://adhdplannerbackend-production.up.railway.app";
 
   static const String login =
       "/auth/login";
@@ -34,18 +34,3 @@ class ApiConstants {
   static const String profile =
       "/profile";
 }
-
-  
-  /// Base URL
-
-  /// Production
-  // static const String baseUrl =
-  //   "https://api.yourdomain.com";
-
-  /// Android Emulator
-  // static const String baseUrl =
-  //  "http://10.0.2.2:8000";
-
-  /// Android Real Device
-  ///  static const String baseUrl =
-  ///   "http:// IPv4 Address:8000";

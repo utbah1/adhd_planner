@@ -12,12 +12,16 @@ class AnalyticsService {
 
   static final Dio _dio = DioClient.dio;
 
-  /// GET /analytics/dashboard
-  static Future<AnalyticsDashboardModel> getDashboard() async {
+  /// GET /analytics/dashboard?date=today
+  static Future<AnalyticsDashboardModel> getDashboardForToday() async {
     try {
       final response = await _dio.get(
         EndpointConstants.dashboard,
+        queryParameters: {
+          "date": "today",
+        },
       );
+
 
       final result = ApiResponse<AnalyticsDashboardModel>.fromJson(
         response.data,
